@@ -1,0 +1,12 @@
+import math
+a=math.ceil(-45.12)
+b=math.ceil(30.6)
+c=math.ceil(50.4)
+d=math.ceil(-0.3)
+e=math.ceil(20.9)
+A=math.floor(-45.12)
+B=math.floor(30.6)
+C=math.floor(50.4)
+D=math.floor(-0.3)
+E=math.floor(20.9)
+print(a,b,c,d,e,A,B,C,D,E)

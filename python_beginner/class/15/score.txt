@@ -1,0 +1,3 @@
+Peter:90
+Tom:70
+John:80
