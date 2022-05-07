@@ -35,6 +35,7 @@ img_bend_down = [
     pygame.image.load("image/小恐龍蹲下2.png")
 ]
 img_gg = pygame.image.load('image/gameover.png')
+img_monster = pygame.image.load('image/teacher2.png')
 #***載入圖片結束***
 
 #===遊戲視窗設定開始===
@@ -105,13 +106,35 @@ def move_cacti(win):
     cacti_x -= cacti_shift
     win.blit(img_cacti, [cacti_x, cacti_y])
     if cacti_x < 0:
-        xxx = random.randint(0, 1)
+        xxx = random.randint(0, 2)
         score += 1
         cacti_x = bg_x - 100
         cacti_y = LIMIT_LOW
 
 
 #***仙人掌設定結束***
+
+#===怪物設定開始===
+mon_w = img_monster.get_width()
+mon_h = img_monster.get_height()
+mon_x = bg_x - 100
+mon_y = LIMIT_LOW
+mon_shift = 10
+mon_dist = int((mon_w + mon_h) / 2)
+
+
+def move_monster(win):
+    global mon_x, mon_y, mon_shift, score, xxx
+    mon_x -= mon_shift
+    win.blit(img_monster, [mon_x, mon_y])
+    if mon_x < 0:
+        xxx = random.randint(0, 2)
+        score += 2
+        mon_x = bg_x - 100
+        mon_y = LIMIT_LOW
+
+
+#***怪物設定結束***
 
 #===翼龍設定開始===
 ptera_w = img_ptera[0].get_width()
@@ -127,7 +150,7 @@ def move_ptera(win, timer):
     ptera_x -= ptera_shift
     win.blit(img_ptera[timer % 10 // 5], [ptera_x, ptera_y])
     if ptera_x < 0:
-        xxx = random.randint(0, 1)
+        xxx = random.randint(0, 2)
         score += 1
         ptera_x = bg_x - 100
         ptera_y = LIMIT_LOW - 30
@@ -157,7 +180,7 @@ def game_over(win):
 
 
 #***GameOver設定結束***
-
+pygame.mixer.music.load("image/hit.mp3")
 #===主程式開始===
 while True:
     #===計時與速度===
@@ -170,6 +193,7 @@ while True:
         if event.type == KEYDOWN:  #判斷是否按下
             if event.key == K_UP and ds_y >= dino_limit:  #判斷恐龍是否在地上
                 jumpState = True  #開啟跳
+                pygame.mixer.music.play()
             elif event.key == K_DOWN and jumpState == False:
                 dino_show = img_bend_down
                 dino_limit = get_dino_limit(dino_show)
@@ -178,6 +202,7 @@ while True:
                 gg = False
                 cacti_x = bg_x - 100
                 ptera_x = bg_x - 100
+                mon_x = bg_x - 100
                 ds_x = 50
                 ds_y = dino_limit
                 score = 0
@@ -199,12 +224,16 @@ while True:
         get_score(screen)
         if xxx == 0:
             move_cacti(screen)
-        else:
+        if xxx == 1:
+            move_monster(screen)
+        if xxx == 2:
             move_ptera(screen, timer)
         #===更新角色狀態===
         if (is_hit(ds_x, ds_y, cacti_x, cacti_y, cacti_dist)):
             gg = True
         if (is_hit(ds_x, ds_y, ptera_x, ptera_y, ptera_dist)):
+            gg = True
+        if (is_hit(ds_x, ds_y, mon_x, mon_y, mon_dist)):
             gg = True
     pygame.display.update()
     #===主程式結束===
