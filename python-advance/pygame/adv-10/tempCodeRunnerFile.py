@@ -1,0 +1,1 @@
+from fcntl import F_SEAL_SEAL
