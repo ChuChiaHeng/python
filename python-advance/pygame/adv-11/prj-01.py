@@ -13,6 +13,7 @@ pygame.init()
 clock = pygame.time.Clock()
 timer = 0
 MISSILE_MAX = 18
+RED = (255, 255, 255)
 #***初始化設定結束***
 
 #===載入圖片開始===
@@ -26,7 +27,7 @@ img_sship = [
 img_burn = pygame.image.load("image/starship_burner.png")
 img_weapon = pygame.image.load("image/bullet.png")
 img_enemy = pygame.image.load("image/enemy1.png")
-
+img_enemy2 = pygame.image.load("image/enemy2.png")
 #***載入圖片結束***
 
 #===遊戲視窗設定開始===
@@ -125,10 +126,11 @@ emy_y = bg_y + 10
 emy_wh = img_enemy.get_width() / 2
 emy_hh = img_enemy.get_height() / 2
 emy_shift = 5
+emy_dist = int(emy_wh + emy_hh)
 
 
 def move_enemy(win):
-    global emy_f, emy_x, emy_y
+    global emy_f, emy_x, emy_y, score
     if emy_y > bg_y:
         emy_f = True
         emy_x = random.randint(emy_wh, bg_x - emy_wh)
@@ -138,11 +140,50 @@ def move_enemy(win):
         win.blit(img_enemy, [emy_x, emy_y])
         if emy_y > bg_y:
             emy_f = False
+    for a in range(0, 18):
+        if is_hit(emy_x, emy_y, msl_x[a], msl_y[a], emy_dist) == True:
+            pygame.mixer.music.play()
+            emy_y = bg_y + 10
+            score += 1
+
+
+emy2_f = False
+emy2_x = 0
+emy2_y = bg_y + 10
+emy2_wh = img_enemy2.get_width() / 2
+emy2_hh = img_enemy2.get_height() / 2
+emy2_shift = 5
+emy2_dist = int(emy2_wh + emy2_hh)
+
+
+def move_enemy1(win):
+    global emy2_f, emy2_x, emy2_y, score
+    if emy2_y > bg_y:
+        emy2_f = True
+        emy2_x = random.randint(int(emy2_wh), int(bg_x - emy2_wh))
+        emy2_y = random.randint(int(emy2_hh), int(emy2_hh + 100))
+    if emy2_f == True:
+        emy2_y = emy2_y + emy2_shift
+        win.blit(img_enemy2, [emy2_x, emy2_y])
+        if emy2_y > bg_y:
+            emy2_f = False
+    for x in range(0, 18):
+        if is_hit(emy2_x, emy2_y, msl_x[x], msl_y[x], emy_dist) == True:
+            pygame.mixer.music.play()
+            emy2_y = bg_y + 10
+            score += 1
 
 
 #***敵機設定結束***
 
+
 #===碰撞偵測設定開始===
+def is_hit(x1, y1, x2, y2, r):
+    if (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) < (r * r):
+        return True
+    else:
+        return False
+
 
 #***碰撞偵測設定結束***
 
@@ -154,9 +195,25 @@ def move_enemy(win):
 
 #***保護罩設定結束***
 
+#===分數設定開始===
+score = 0
+got_score = False
+typeface = pygame.font.get_default_font()
+score_font = pygame.font.Font(typeface, 36)
+score_sur = score_font.render(str(score), False, RED)
+
+
+def get_score(win):
+    global score, score_sur
+    score_sur = score_font.render(str(score), True, RED)
+    win.blit(score_sur, [10, 10])
+
+
+#***分數罩設定結束***
+pygame.mixer.music.load("image/hit.mp3")
 #===主程式開始===
 while True:
-    clock.tick(30)
+    clock.tick(20)
     timer += 1
     key = pygame.key.get_pressed()
     for event in pygame.event.get():
@@ -171,5 +228,7 @@ while True:
     move_straship(screen, key, timer)
     move_missile(screen, key, timer)
     move_enemy(screen)
+    move_enemy1(screen)
+    get_score(screen)
     pygame.display.update()
 #===主程式結束===
