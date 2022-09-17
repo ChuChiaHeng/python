@@ -11,6 +11,7 @@ from pygame.locals import *
 pygame.init()
 clock = pygame.time.Clock()
 timer = 0
+
 #***初始化設定結束***
 
 #===載入圖片開始===

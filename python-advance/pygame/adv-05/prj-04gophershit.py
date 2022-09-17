@@ -82,7 +82,7 @@ while True:
                               orange)
         screen.blit(sur, (0, 0))
         screen.blit(end_sur, (100, 100))
-
+        pygame.display.flip()
     else:
         if tick > max_tick:
             times += 1

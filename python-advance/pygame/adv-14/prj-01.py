@@ -82,7 +82,7 @@ paddle_y = (bg_y - 24)
 
 def paddle_update(win):
     global dy
-    paddly_rect = [paddle_x, paddle_y, 1000, 10]
+    paddly_rect = [paddle_x, paddle_y, 100, 10]
     pygame.draw.rect(win, RED, paddly_rect)
     if is_hit(ball_x, ball_y, paddly_rect):
         dy = -dy
